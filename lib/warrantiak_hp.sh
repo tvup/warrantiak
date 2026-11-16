@@ -1,15 +1,25 @@
 #!/usr/bin/env bash
 
+# Escapes a value for use inside a JSON string
+_hp_json_str() {
+    local s="$1"
+    s="${s//\\/\\\\}"
+    s="${s//\"/\\\"}"
+    s="${s//$'\n'/\\n}"
+    s="${s//$'\r'/\\r}"
+    s="${s//$'\t'/\\t}"
+    printf '%s' "$s"
+}
+
+# Uses the locals of _hp_get_warranty_info (bash dynamic scoping)
 _hp_json_output() {
     echo "{"
-    echo "  \"SerialNumber\": \"$serial_number\","
-    echo "  \"FullType\": \"$full_type\","
-    echo "  \"TypeNumber\": \"$type_number\","
-    echo "  \"TypeName\": \"$type_name\","
-    echo "  \"WarrantyStart\": \"$WARRANTY_START\","
-    echo "  \"WarrantyEnd\": \"$WARRANTY_END\","
-    echo "  \"Product\": \"$PRODUCT\","
-    echo "  \"Model\": \"$MODEL\""
+    echo "  \"SerialNumber\": \"$(_hp_json_str "$serial_number")\","
+    echo "  \"ProductName\": \"$(_hp_json_str "$product_name")\","
+    echo "  \"ProductNumber\": \"$(_hp_json_str "$product_number")\","
+    echo "  \"WarrantyStart\": \"$(_hp_json_str "$warranty_start")\","
+    echo "  \"WarrantyEnd\": \"$(_hp_json_str "$warranty_end")\","
+    echo "  \"WarrantyStatus\": \"$(_hp_json_str "$status")\""
     echo "}"
 }
 
@@ -67,7 +77,7 @@ EOF
     local product_name=$(echo "$response" | grep -o '"productName":"[^"]*"' | sed 's/"productName":"//;s/"//')
 
     # Output the JSON
-    [[ "$json_output" == "true" ]] && { _lenovo_json_output; return; }
+    [[ "$json_output" == "true" ]] && { _hp_json_output; return; }
 
     # Output the human-readable format
     echo ""
@@ -79,6 +89,9 @@ EOF
     echo "Warranty End    : $warranty_end"
     echo "Warranty Status : $status"
     echo "==============================================================="
+  elif [[ "$json_output" == "true" ]]; then
+    echo "{\"SerialNumber\": \"$(_hp_json_str "$serial_number")\", \"error\": \"Failed to retrieve warranty information\"}"
+    return 1
   else
     echo "Failed to retrieve warranty information. Response:"
     echo "$response"
