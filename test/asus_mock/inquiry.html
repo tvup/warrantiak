@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Warranty Status Inquiry (ASUS mock)</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 36rem; margin: 3rem auto; padding: 0 1rem; }
+  .banner { background: #fff3cd; border: 1px solid #e0c36a; padding: .5rem .75rem; border-radius: 4px; }
+  label, input, button { font-size: 1rem; }
+  input[type=text] { width: 100%; padding: .4rem; margin: .5rem 0; box-sizing: border-box; }
+  button { padding: .5rem 1.25rem; margin-top: .75rem; }
+  .error { color: #b00020; margin-top: .75rem; }
+</style>
+</head>
+<body>
+<p class="banner">Local ASUS mock &middot; website: <b>__WEBSITE__</b> &middot; answers come from test/asus_mock/fixtures</p>
+<h1>Warranty Status Inquiry</h1>
+<label for="sn">Serial number</label>
+<input id="sn" type="text">
+<label><input id="privacy" type="checkbox"> I accept the privacy terms</label><br>
+<button id="submit">Submit</button>
+<p id="error" class="error" hidden></p>
+
+<script>
+  // Mirrors the flow of ASUS' page: GetWarranty, then either an error message
+  // on this page or a redirect to the result page.
+  const WEBSITE = "__WEBSITE__";
+  const AUTOSUBMIT = __AUTOSUBMIT__;
+  const ERROR_MODES = ["NotSN", "InNotRegion", "NoService", "NotBeConfirmed"];
+
+  const sn = document.getElementById("sn");
+  const privacy = document.getElementById("privacy");
+  const error = document.getElementById("error");
+
+  // ASUS reads ?sn= the same naive way
+  const query = {};
+  location.search.replace(/^\?/, "").split("&").forEach(p => { const [k, v] = p.split("="); if (k) query[k] = v; });
+  if (query.sn) sn.value = decodeURIComponent(query.sn);
+
+  function showError(text) { error.textContent = text; error.hidden = false; }
+
+  async function submit() {
+    error.hidden = true;
+    if (!privacy.checked) return showError("Please accept the privacy terms.");
+    if (!sn.value.trim()) return showError("Serial number cannot be empty.");
+    try {
+      const url = "/support/api/service.asmx/GetWarranty?website=" + WEBSITE +
+        "&type=2&sn=" + encodeURIComponent(sn.value.trim()) + "&gtid=mock-recaptcha-token&token=mock-sp-token";
+      const data = await (await fetch(url)).json();
+      const obj = data.Result && data.Result.Obj;
+      const mode = obj && obj.SNStatus && obj.SNStatus.Mode;
+      if (data.Status === "FAIL" || ERROR_MODES.includes(mode) || !obj || !obj.Items || !obj.Items.length) {
+        return showError("The Serial number you entered is invalid");
+      }
+      sessionStorage.setItem("SessionName", JSON.stringify(data));
+      location.href = "/" + WEBSITE + "/support/Warranty-Status-Result";
+    } catch (e) {
+      showError("The system is busy now, please try again later");
+    }
+  }
+
+  document.getElementById("submit").addEventListener("click", submit);
+  if (AUTOSUBMIT) { privacy.checked = true; setTimeout(submit, 200); }
+</script>
+</body>
+</html>

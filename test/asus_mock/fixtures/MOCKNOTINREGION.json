@@ -1,0 +1,27 @@
+{
+    "Result": {
+        "Obj": {
+            "Type": "2",
+            "Items": [
+                {
+                    "Series": "Mock Series",
+                    "Model": "MOCK-MODEL-1",
+                    "SerialNO": "MOCKNOTINREGION",
+                    "WarrantyStatusKey": "1",
+                    "WarrantyStatus": "",
+                    "WarrantyStartDate": "2025-03-01T00:00:00.000Z",
+                    "WarrantyDate": "",
+                    "WarrantyCountry": "IT",
+                    "WarrantyTerritory": ""
+                }
+            ],
+            "SubGroup": [],
+            "SNStatus": {
+                "Mode": "InNotRegion",
+                "Message": ""
+            }
+        }
+    },
+    "Status": "SUCCESS",
+    "Message": "SUCCESS"
+}

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Warranty Status Result (ASUS mock)</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 36rem; margin: 3rem auto; padding: 0 1rem; }
+  .banner { background: #fff3cd; border: 1px solid #e0c36a; padding: .5rem .75rem; border-radius: 4px; }
+  dt { font-weight: 600; margin-top: .5rem; }
+  dd { margin: 0; }
+</style>
+</head>
+<body>
+<p class="banner">Local ASUS mock &middot; result page</p>
+<h1>Warranty Status Result</h1>
+<dl id="result"></dl>
+<script>
+  const data = JSON.parse(sessionStorage.getItem("SessionName") || "null");
+  const item = data && data.Result && data.Result.Obj.Items[0];
+  const fields = ["Model", "Series", "SerialNO", "WarrantyStartDate", "WarrantyDate", "WarrantyStatus", "WarrantyTerritory"];
+  const dl = document.getElementById("result");
+  if (!item) {
+    dl.textContent = "No result in this session.";
+  } else {
+    for (const f of fields) {
+      const dt = document.createElement("dt"); dt.textContent = f;
+      const dd = document.createElement("dd"); dd.textContent = item[f] || "";
+      dl.append(dt, dd);
+    }
+  }
+</script>
+</body>
+</html>

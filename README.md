@@ -66,11 +66,36 @@ GENERATE OPTIONS
         check the warranty status of a DELL device
     -A, --asus-check
         check the warranty status of a ASUS device
+
+INPUT OPTIONS
+    -s, --serial SN
+        serial number to check; asked for if omitted
+    --asus-website CODE
+        ASUS country site, e.g. dk, de, uk (default global)
+    --asus-base-url URL
+        use another ASUS server, e.g. the local mock (default https://www.asus.com)
+
+OUTPUT OPTIONS
+    -j, --json
+        print the result as JSON
+    --debug
+        print debug information to stderr, e.g. the raw ASUS response
+    -h, --help
+        show help
 ```
+
+Options take precedence over the corresponding environment variables, and
+values can be given as `--serial SN` or `--serial=SN`.
 
 ### Non-interactive S/N check
 
-You can set the variable `_SERIAL_NUMBER`
+Pass the serial number with `-s` / `--serial`:
+
+```bash
+./warrantiak -L --serial SN123FOOBAR
+```
+
+or set the variable `_SERIAL_NUMBER`
 
 ```bash
 export _SERIAL_NUMBER="SN123FOOBAR"
@@ -78,11 +103,73 @@ export _SERIAL_NUMBER="SN123FOOBAR"
 
 ### JSON output
 
-You can set the variable `_JSON_OUTPUT`
+Add `-j` / `--json` to a check option:
+
+```bash
+./warrantiak -L --json
+```
+
+or set the variable `_JSON_OUTPUT`
 
 ```bash
 export _JSON_OUTPUT="true"
 ```
+
+Prompts and notices are written to stderr, so stdout contains only the JSON.
+
+### ASUS
+
+ASUS protects its warranty lookup with Google reCAPTCHA, so it can only be
+checked from a real browser on asus.com. `warrantiak` does not bypass this:
+
+- **Default:** the ASUS inquiry page is opened in your default browser with the
+  serial number pre-filled. Accept the privacy terms and click *Submit*.
+- **With Playwright installed:** a browser window opens on the ASUS page, you
+  click *Submit*, and `warrantiak` prints the result in the terminal (JSON
+  output supported). If ASUS rejects the lookup from the automated browser
+  (`Status: FAIL`), the page is opened in your default browser instead.
+
+```bash
+pip install playwright && python3 -m playwright install chromium
+```
+
+Force a mode with `_ASUS_MODE` (`auto` (default), `browser` or `playwright`):
+
+```bash
+export _ASUS_MODE="browser"
+```
+
+Devices sold in a specific country may show *"not sold in this region"* on the
+global ASUS site. Select the country site with `--asus-website` or
+`_ASUS_WEBSITE` (default `global`). If that country has no warranty inquiry
+page (e.g. `it`), the global page is used instead:
+
+```bash
+./warrantiak -A --serial SN123FOOBAR --asus-website dk
+# or
+export _ASUS_WEBSITE="dk"
+```
+
+To see the raw ASUS response, add `--debug` (or set `_ASUS_DEBUG=1`).
+
+### Testing (ASUS mock)
+
+`test/asus_mock` contains a local mock of ASUS' inquiry page and API that
+answers from JSON fixtures per serial number. Run the tests with
+
+```bash
+make test
+```
+
+or start the mock and point `warrantiak` at it:
+
+```bash
+make mock-asus
+./warrantiak -A -s 84OAAQ047369 --asus-base-url http://127.0.0.1:18765
+```
+
+See [test/asus_mock/README.md](test/asus_mock/README.md) for the fixtures and
+details.
 
 ### UNIX and Linux
 
@@ -91,13 +178,19 @@ git clone https://github.com/be-lenka/warrantiak.git && cd warrantiak
 sudo make install
 ```
 
+This installs `warrantiak` to `/usr/local/bin` and the vendor libraries to
+`/usr/local/share/warrantiak/lib`. Use `PREFIX` to install elsewhere, e.g.
+`make install PREFIX=$HOME/.local`.
+
 For uninstalling, open up the cloned directory and run
 
 ```bash
 sudo make uninstall
 ```
 
-For update/reinstall
+For update/reinstall, update your clone (e.g. `git pull`) and run the command
+below in the cloned directory. It removes the installed copy and installs the
+local files again; nothing is downloaded.
 
 ```bash
 sudo make reinstall

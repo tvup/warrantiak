@@ -1,0 +1,15 @@
+{
+    "Result": {
+        "Obj": {
+            "Type": "2",
+            "Items": [],
+            "SubGroup": [],
+            "SNStatus": {
+                "Mode": "NotSN",
+                "Message": ""
+            }
+        }
+    },
+    "Status": "SUCCESS",
+    "Message": "SUCCESS"
+}

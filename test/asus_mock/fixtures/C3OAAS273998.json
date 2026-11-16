@@ -1,0 +1,82 @@
+{
+    "Result": {
+        "Obj": {
+            "Type": "2",
+            "Items": [
+                {
+                    "Series": "Eee PC (System)",
+                    "Model": "R051BX-WHI031S",
+                    "SerialNO": "C3OAAS273998",
+                    "WarrantyStatusKey": "0",
+                    "WarrantyStatus": "Außerhalb der Garantie",
+                    "WarrantyStartDate": "2012-04-03T16:00:00.000Z",
+                    "WarrantyDate": "2013-04-02T21:59:59.000Z",
+                    "WarrantyDesc": "",
+                    "EventWording": "",
+                    "WarrantyCountry": "SG",
+                    "FinalWarrantyEndType": "(1ST SO)",
+                    "WarrantyTerritory": "Global",
+                    "ShowWarrantyTerritoryWording": false,
+                    "ProductRegistrationStatus": false,
+                    "ProductRegistrationUrl": "https://account.asus.com/myproducts.aspx?utm_source=support&utm_medium=internal_link&utm_campaign=globalcrm&utm_content=",
+                    "IsWarrantyUpdated": false,
+                    "ProductImageUrl": "https://dlcdnwebimgs.asus.com/gain/a8474d45-4dd5-41af-a6bc-b7ea6e155cbb/h300/w300",
+                    "ServiceCoverage": {
+                        "MonthsRemain": -163,
+                        "PhoneSupport": false,
+                        "Warranty": false,
+                        "RepairTime": false,
+                        "Onsite": null,
+                        "ADP": null
+                    }
+                }
+            ],
+            "SubGroup": [
+                {
+                    "Id": "99",
+                    "Name": "ASUS Premium Care",
+                    "CssClass": "",
+                    "Description": "",
+                    "Url": "https://www.asus.com/de/support/Premium_Care",
+                    "Target": "_self"
+                },
+                {
+                    "Id": "100",
+                    "Name": "Garantie anpassen (Rechnungsupload)",
+                    "CssClass": "",
+                    "Description": "",
+                    "Url": "https://www.asus.com/de/support/article/1128/",
+                    "Target": "_self"
+                }
+            ],
+            "ColumnDisplay": [
+                {
+                    "ColumnName": "Warranty_ExpirationDate",
+                    "Status": "1"
+                },
+                {
+                    "ColumnName": "Warranty_ExtendedWarranty",
+                    "Status": "1"
+                },
+                {
+                    "ColumnName": "Warranty_Status",
+                    "Status": "1"
+                },
+                {
+                    "ColumnName": "Warranty_EventStatus",
+                    "Status": "1"
+                },
+                {
+                    "ColumnName": "Warranty_Territory",
+                    "Status": "1"
+                }
+            ],
+            "SNStatus": {
+                "Mode": "NoData",
+                "Message": "Außerhalb der Garantie"
+            }
+        }
+    },
+    "Status": "SUCCESS",
+    "Message": "SUCCESS"
+}

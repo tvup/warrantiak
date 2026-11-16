@@ -1,1 +1,4 @@
 cookie.txt
+.venv/
+__pycache__/
+.claude/

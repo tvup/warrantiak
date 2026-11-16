@@ -1,0 +1,61 @@
+{
+    "Result": {
+        "Obj": {
+            "Type": "2",
+            "Items": [
+                {
+                    "Series": "Eee PC (System)",
+                    "Model": "1201HA-RED007X",
+                    "SerialNO": "A3OAAS250352",
+                    "WarrantyStatusKey": "0",
+                    "WarrantyStatus": "",
+                    "WarrantyStartDate": "2010-03-12T16:00:00.000Z",
+                    "WarrantyDate": "2011-03-12T07:59:59.000Z",
+                    "WarrantyDesc": "",
+                    "EventWording": "",
+                    "WarrantyCountry": "",
+                    "FinalWarrantyEndType": "",
+                    "WarrantyTerritory": "",
+                    "ShowWarrantyTerritoryWording": false,
+                    "ProductRegistrationStatus": false,
+                    "ProductRegistrationUrl": "https://account.asus.com/myproducts.aspx?utm_source=support&utm_medium=internal_link&utm_campaign=globalcrm&utm_content=",
+                    "IsWarrantyUpdated": false,
+                    "ProductImageUrl": "https://dlcdnwebimgs.asus.com/gain/a8474d45-4dd5-41af-a6bc-b7ea6e155cbb/h300/w300",
+                    "ServiceCoverage": {
+                        "MonthsRemain": 0,
+                        "PhoneSupport": null,
+                        "Warranty": null,
+                        "RepairTime": null,
+                        "Onsite": null,
+                        "ADP": null
+                    }
+                }
+            ],
+            "SubGroup": [
+                {
+                    "Id": "9",
+                    "Name": "ASUS Premium Care",
+                    "CssClass": "",
+                    "Description": "",
+                    "Url": "https://www.asus.com/support/Premium_Care",
+                    "Target": "_self"
+                },
+                {
+                    "Id": "485",
+                    "Name": "How to inquire Warranty Status",
+                    "CssClass": "",
+                    "Description": "",
+                    "Url": "https://www.asus.com/us/support/faq/1041323/",
+                    "Target": "_blank"
+                }
+            ],
+            "ColumnDisplay": [],
+            "SNStatus": {
+                "Mode": "InNotRegion",
+                "Message": "Thank you for using the Warranty Check Tool. For more information about your specific Serial Number and Warranty please contact ASUS Support for more information."
+            }
+        }
+    },
+    "Status": "SUCCESS",
+    "Message": "SUCCESS"
+}

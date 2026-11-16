@@ -1,0 +1,82 @@
+{
+    "Result": {
+        "Obj": {
+            "Type": "2",
+            "Items": [
+                {
+                    "Series": "Eee PC (System)",
+                    "Model": "EEEPC1000H-BLK067X",
+                    "SerialNO": "93OAAQ418122",
+                    "WarrantyStatusKey": "0",
+                    "WarrantyStatus": "Out of Warranty",
+                    "WarrantyStartDate": "2009-04-02T16:00:00.000Z",
+                    "WarrantyDate": "2011-04-01T21:59:59.000Z",
+                    "WarrantyDesc": "",
+                    "EventWording": "",
+                    "WarrantyCountry": "SG",
+                    "FinalWarrantyEndType": "(1ST SO)",
+                    "WarrantyTerritory": "SINGAPORE",
+                    "ShowWarrantyTerritoryWording": false,
+                    "ProductRegistrationStatus": false,
+                    "ProductRegistrationUrl": "https://account.asus.com/myproducts.aspx?utm_source=support&utm_medium=internal_link&utm_campaign=globalcrm&utm_content=",
+                    "IsWarrantyUpdated": false,
+                    "ProductImageUrl": "https://dlcdnwebimgs.asus.com/gain/a8474d45-4dd5-41af-a6bc-b7ea6e155cbb/h300/w300",
+                    "ServiceCoverage": {
+                        "MonthsRemain": -187,
+                        "PhoneSupport": false,
+                        "Warranty": false,
+                        "RepairTime": false,
+                        "Onsite": null,
+                        "ADP": null
+                    }
+                }
+            ],
+            "SubGroup": [
+                {
+                    "Id": "57",
+                    "Name": "ASUS Premium Care",
+                    "CssClass": "",
+                    "Description": "",
+                    "Url": "https://www.asus.com/uk/support/Premium_Care",
+                    "Target": "_self"
+                },
+                {
+                    "Id": "58",
+                    "Name": "Upload invoice for your product",
+                    "CssClass": "",
+                    "Description": "",
+                    "Url": "https://www.asus.com/uk/support/upload-purchase",
+                    "Target": "_self"
+                }
+            ],
+            "ColumnDisplay": [
+                {
+                    "ColumnName": "Warranty_ExpirationDate",
+                    "Status": "1"
+                },
+                {
+                    "ColumnName": "Warranty_ExtendedWarranty",
+                    "Status": "1"
+                },
+                {
+                    "ColumnName": "Warranty_Status",
+                    "Status": "1"
+                },
+                {
+                    "ColumnName": "Warranty_EventStatus",
+                    "Status": "1"
+                },
+                {
+                    "ColumnName": "Warranty_Territory",
+                    "Status": "1"
+                }
+            ],
+            "SNStatus": {
+                "Mode": "NoData",
+                "Message": "Out of Warranty"
+            }
+        }
+    },
+    "Status": "SUCCESS",
+    "Message": "SUCCESS"
+}

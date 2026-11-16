@@ -28,11 +28,30 @@ else
     _json_output=""
 fi
 
+# Locate the vendor libraries: next to the script (git checkout) or in
+# <prefix>/share/warrantiak/lib (make install). Override with $_WARRANTIAK_LIB_DIR.
+_script_path=$(readlink -f "${BASH_SOURCE[0]}" 2>/dev/null || printf '%s' "${BASH_SOURCE[0]}")
+_script_dir=$(cd "$(dirname "$_script_path")" && pwd)
+_lib_dir="${_WARRANTIAK_LIB_DIR:-}"
+if [[ -z "$_lib_dir" ]]; then
+    for _candidate in "$_script_dir/lib" "$_script_dir/../share/warrantiak/lib"; do
+        if [[ -f "$_candidate/warrantiak_hp.sh" ]]; then
+            _lib_dir="$_candidate"
+            break
+        fi
+    done
+fi
+if [[ -z "$_lib_dir" || ! -f "$_lib_dir/warrantiak_hp.sh" ]]; then
+    echo "ERROR: warrantiak libraries not found (looked in $_script_dir/lib and $_script_dir/../share/warrantiak/lib)." >&2
+    echo "Reinstall with 'sudo make install' or set _WARRANTIAK_LIB_DIR." >&2
+    exit 1
+fi
+
 # Load the API files for the vendors
-source lib/warrantiak_hp.sh
-source lib/warrantiak_lenovo.sh
-source lib/warrantiak_dell.sh
-source lib/warrantiak_asus.sh
+source "$_lib_dir/warrantiak_hp.sh"
+source "$_lib_dir/warrantiak_lenovo.sh"
+source "$_lib_dir/warrantiak_dell.sh"
+source "$_lib_dir/warrantiak_asus.sh"
 
 ################################################################################
 # HELPER AND MENU FUNCTIONS
@@ -93,7 +112,8 @@ NAME
     ${PROGRAM} - Simple and efficient way to check the warranty status of devices using their serial numbers
 
 SYNOPSIS
-    For non-interactive mode: ${PROGRAM} [OPTIONS]
+    For non-interactive mode: ${PROGRAM} <CHECK OPTION> [-s|--serial SN] [-j|--json]
+                              [--asus-website CODE] [--debug]
     For interactive mode: ${PROGRAM}
 
 DESCRIPTION
@@ -108,7 +128,28 @@ GENERATE OPTIONS
     -D, --dell-check
         check the warranty status of a Dell device
     -A, --asus-check
-        check the warranty status of an Asus device"
+        check the warranty status of an Asus device
+
+INPUT OPTIONS
+    -s, --serial SN
+        serial number to check (same as _SERIAL_NUMBER); asked for if omitted
+    --asus-website CODE
+        ASUS country site, e.g. dk, de, uk (same as _ASUS_WEBSITE; default global)
+    --asus-base-url URL
+        use another ASUS server, e.g. the local mock http://127.0.0.1:18765
+        (same as _ASUS_BASE_URL; default https://www.asus.com)
+
+OUTPUT OPTIONS
+    -j, --json
+        print the result as JSON (same as _JSON_OUTPUT=true)
+    --debug
+        print debug information to stderr, e.g. the raw ASUS response
+        (same as _ASUS_DEBUG=1)
+    -h, --help
+        show this help
+
+    Options take precedence over the corresponding environment variables.
+    Values can be given as '--serial SN' or '--serial=SN'."
 }
 
 ################################################################################
@@ -167,37 +208,51 @@ function asusStats() {
 checkUtils
 
 # Parse non-interative commands
-if [[ "$#" -eq 1 ]]; then
-    case "$1" in
-        # GENERATE OPTIONS
-        -L|--lenovo-check)
-            sn="${_serial_number:-}"
-            while [[ -z "${sn}" ]]; do
-                read -r -p "Which serial number? " sn
-            done
-            lenovoStats "${sn}";;
-        -D|--dell-check)
-            sn="${_serial_number:-}"
-            while [[ -z "${sn}" ]]; do
-                read -r -p "Which serial number? " sn
-            done
-            dellStats "${sn}";;
-        -A|--asus-check)
-            sn="${_serial_number:-}"
-            while [[ -z "${sn}" ]]; do
-                read -r -p "Which serial number? " sn
-            done
-            asusStats "${sn}";;
-        -H|--hp-check)
-            sn="${_serial_number:-}"
-            while [[ -z "${sn}" ]]; do
-                read -r -p "Which serial number? " sn
-            done
-            hpStats "${sn}";;
-    esac
-    exit 0;
+if [[ "$#" -gt 0 ]]; then
+    _action=""
+    while [[ "$#" -gt 0 ]]; do
+        _next=""
+        case "$1" in
+            # GENERATE OPTIONS
+            -L|--lenovo-check) _next="lenovoStats";;
+            -H|--hp-check)     _next="hpStats";;
+            -D|--dell-check)   _next="dellStats";;
+            -A|--asus-check)   _next="asusStats";;
+            # INPUT OPTIONS
+            -s|--serial|--asus-website|--asus-base-url)
+                [[ "$#" -ge 2 && -n "$2" && "$2" != -* ]] || { echo "Option $1 requires a value." >&2; usage >&2; exit 1; }
+                case "$1" in
+                    -s|--serial)     _serial_number="$2";;
+                    --asus-website)  _ASUS_WEBSITE="$2";;
+                    --asus-base-url) _ASUS_BASE_URL="$2";;
+                esac
+                shift;;
+            --serial=*)        _serial_number="${1#*=}";;
+            --asus-website=*)  _ASUS_WEBSITE="${1#*=}";;
+            --asus-base-url=*) _ASUS_BASE_URL="${1#*=}";;
+            # OUTPUT OPTIONS
+            -j|--json)         _json_output="true";;
+            --debug)           export _ASUS_DEBUG=1;;
+            -h|--help)         usage; exit 0;;
+            *) echo "Invalid argument: $1" >&2; usage >&2; exit 1;;
+        esac
+        if [[ -n "$_next" ]]; then
+            [[ -n "$_action" ]] && { echo "Only one check option can be given." >&2; usage >&2; exit 1; }
+            _action="$_next"
+        fi
+        shift
+    done
+
+    [[ -z "$_action" ]] && { echo "Missing check option (-L, -H, -D or -A)." >&2; usage >&2; exit 1; }
+
+    # The prompt goes to stderr, so stdout stays pure JSON with --json
+    sn="${_serial_number:-}"
+    while [[ -z "${sn}" ]]; do
+        read -r -p "Which serial number? " sn
+    done
+    "$_action" "${sn}"
+    exit 0
 fi
-[[ "$#" -gt 1 ]] && { echo "Invalid arguments"; usage; exit 1; }
 
 # Parse interactive commands
 clear
